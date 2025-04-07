@@ -18,43 +18,46 @@
      <div class="err"></div>
     <button id="add">Add</button>
       <div id="mylist"></div>
+ <script>
+$("#mylist").html(localStorage.getItem("taskHTML") || "");
+bindTaskEvents();
 
+$("#add").click(function () {
+    let value = $("#value").val().trim();
+    if (value !== "") {
+        let taskHTML = "<li class='task'><span class='task-text'>" + 
+                        value + 
+                        "</span> <button class='edit'><i class='ri-pencil-fill'></i></button> <button class='delete'>X</button></li>";
+        $("#mylist").append(taskHTML);
+        $("#value").val("");
+        $(".err").text("");
 
-        <script>
+        saveTasks();
+        bindTaskEvents();
+    } else {
+        $(".err").text("Please enter a task");
+    }
+});
 
-
-    $("#add").click(function () {
-        let value = $("#value").val();
-        if (value !== "") {
-                $("#mylist").append("<li class='task'><span class='task-text'>" + value + "</span> <button class='edit'><i class='ri-pencil-fill'></i></button> <button class='delete'>X</button></li>")
-           
-        
-            $(".delete").on("click", function() { 
-                      $(this).parent().remove(); 
-                  });
-                  $("#mylist").on("click", ".edit", function () {
-                let taskText = $(this).siblings(".task-text");
-                let newValue = prompt("Update your task:", taskText.text());
-                if (newValue !== null  !== "") {
-                    taskText.text(newValue);
-                }
-            });\
- 
-
-           
-        }
-        else{
-            $(".err").text("please enter task");
-            isValid = false;
-        }
-       
+function bindTaskEvents() {
+    $(".delete").off().on("click", function () {
+        $(this).parent().remove();
+        saveTasks();
     });
-    
 
-         </script>
-     
-     </body>
-     </html>
+    $(".edit").off().on("click", function () {
+        let taskText = $(this).siblings(".task-text");
+        let newValue = prompt("Update your task:", taskText.text());
+        if (newValue !== null && newValue.trim() !== "") {
+            taskText.text(newValue);
+            saveTasks();
+        }
+    });
+}
+
+function saveTasks() {
+    localStorage.setItem("taskHTML", $("#mylist").html());
+}
      
 
 
